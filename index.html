@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIポーカー道場 — 学べるテキサスホールデム</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <h1>♠ AIポーカー道場</h1>
+    <nav id="tabs">
+      <button class="tab-btn active" data-tab="game">ゲーム</button>
+      <button class="tab-btn" data-tab="learn">学習</button>
+      <button class="tab-btn" data-tab="glossary">用語集</button>
+      <button class="tab-btn" data-tab="stats">成績</button>
+    </nav>
+    <div id="quick-stats">
+      <span>回収率 <b id="qs-roi">—</b></span>
+      <span>収支 <b id="qs-profit">±0</b></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ============ ゲームタブ ============ -->
+  <section id="tab-game" class="tab-panel active">
+    <div id="game-layout">
+      <div id="table-col">
+        <div id="table">
+          <div id="opponents"></div>
+          <div id="board-area">
+            <div id="street-label"></div>
+            <div id="board"></div>
+            <div id="pot">ポット: 0</div>
+          </div>
+          <div id="hero-row"></div>
+        </div>
+
+        <div id="action-bar">
+          <div id="action-info"></div>
+          <div id="action-buttons"></div>
+        </div>
+
+        <details id="log-box" open>
+          <summary>ハンド履歴</summary>
+          <div id="log"></div>
+        </details>
+      </div>
+
+      <aside id="study-panel">
+        <div class="study-header">
+          <span>📖 学習パネル</span>
+          <label class="toggle">
+            <input type="checkbox" id="study-toggle" checked>
+            <span>表示</span>
+          </label>
+        </div>
+        <div id="study-content">
+          <div class="study-block" id="sb-equity">
+            <h3>エクイティ(勝率)</h3>
+            <div class="eq-row">
+              <span class="eq-label">vs ランダム</span>
+              <div class="eq-bar"><div class="eq-fill" id="eq-random-fill"></div></div>
+              <span class="eq-val" id="eq-random-val">—</span>
+            </div>
+            <div class="eq-row">
+              <span class="eq-label">vs 推定レンジ</span>
+              <div class="eq-bar"><div class="eq-fill range" id="eq-range-fill"></div></div>
+              <span class="eq-val" id="eq-range-val">—</span>
+            </div>
+            <div class="eq-note" id="eq-method"></div>
+          </div>
+
+          <div class="study-block" id="sb-odds">
+            <h3>ポットオッズ</h3>
+            <div id="pot-odds-body">—</div>
+          </div>
+
+          <div class="study-block" id="sb-draws">
+            <h3>ドロー / アウツ</h3>
+            <div id="draws-body">—</div>
+          </div>
+
+          <div class="study-block" id="sb-coach">
+            <h3>💡 推奨アクション</h3>
+            <div id="coach-body">—</div>
+          </div>
+
+          <div class="study-block" id="sb-range">
+            <h3>相手のレンジ予想 <select id="range-opp-select"></select></h3>
+            <div id="range-note"></div>
+            <div id="range-grid"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div id="setup-bar">
+      <label>AIの人数:
+        <select id="ai-count">
+          <option value="1">1人(ヘッズアップ)</option>
+          <option value="2" selected>2人</option>
+          <option value="3">3人</option>
+        </select>
+      </label>
+      <button id="new-game-btn">🔄 新しいゲーム(スタックリセット)</button>
+      <span id="ai-roster"></span>
+    </div>
+  </section>
+
+  <!-- ============ 学習タブ ============ -->
+  <section id="tab-learn" class="tab-panel">
+    <h2>ポーカーレッスン</h2>
+    <div id="lessons"></div>
+    <h2>⚡ エクイティクイズ</h2>
+    <p class="quiz-desc">この状況、あなたの勝率(vs ランダムハンド1人)は何%?
+      2倍4倍ルールやハンドの強さから推測してみよう。</p>
+    <div id="equity-quiz" class="quiz-box"></div>
+    <h2>🃏 役判定クイズ</h2>
+    <p class="quiz-desc">7枚のカードからできる最強の役は?</p>
+    <div id="rank-quiz" class="quiz-box"></div>
+  </section>
+
+  <!-- ============ 用語集タブ ============ -->
+  <section id="tab-glossary" class="tab-panel">
+    <h2>ポーカー用語集</h2>
+    <dl id="glossary"></dl>
+  </section>
+
+  <!-- ============ 成績タブ ============ -->
+  <section id="tab-stats" class="tab-panel">
+    <h2>成績</h2>
+    <div id="roi-hero-box">
+      <div class="roi-big">回収率 <span id="stat-roi">—</span></div>
+      <div class="roi-sub">目標: 100%超え — 投資 <span id="stat-invested">0</span> / 回収 <span id="stat-returned">0</span></div>
+    </div>
+    <div id="stats-grid"></div>
+    <h3>バンクロール推移</h3>
+    <div id="bankroll-chart"></div>
+    <button id="stats-reset">成績をリセット</button>
+  </section>
+</main>
+
+<!-- ハンド読みチャレンジ等のモーダル -->
+<div id="modal-overlay" class="hidden">
+  <div id="modal-box"></div>
+</div>
+
+<script src="js/poker.js?v=4"></script>
+<script src="js/ai.js?v=4"></script>
+<script src="js/game.js?v=4"></script>
+<script src="js/content.js?v=4"></script>
+<script src="js/app.js?v=4"></script>
+</body>
+</html>
